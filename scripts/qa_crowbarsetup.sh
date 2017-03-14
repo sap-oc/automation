@@ -5598,6 +5598,8 @@ function oncontroller_setupproduction()
         cinder quota-update --gigabytes 150 $tenantid
     done
 
+    # all LDAP users can access the suse project:
+    openstack role add --group suse --group-domain ldap_users --project suse Member
     tenantid=$(getprojectid openstack)
     nova quota-update --instances 400 --key-pairs 400 --server-groups 400 --ram 120000 --cores 500 --floating-ips 200 $tenantid
     neutron quota-update --floatingip 200 --security-group 400 --port 400 --network 200 --router 100 --vip 100 --pool 100
