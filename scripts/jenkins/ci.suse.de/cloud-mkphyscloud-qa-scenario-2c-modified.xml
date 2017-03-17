@@ -250,7 +250,7 @@ if [ "$ret" = "0" ]; then
     ssh -T root@$admin "bash -s $SBD_DEV" &lt;&lt;'EOF'
     SBD_DEV=$1
     sed -i "s|/dev/sda|\${SBD_DEV}|g" scenario.yml
-    EOF
+EOF
     # ----- End of SBD
 EOSCRIPT
 
