@@ -339,5 +339,6 @@ scenario_build_number=$BUILD_NUMBER
       <runAtStart>true</runAtStart>
       <runAtEnd>true</runAtEnd>
     </org.jenkinsci.plugins.buildnamesetter.BuildNameSetter>
+    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@"/>
   </buildWrappers>
 </project>
