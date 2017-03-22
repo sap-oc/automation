@@ -184,6 +184,7 @@ a fail will not be considered for now.
               <string>raw</string>
               <string>rbd</string>
               <string>netapp</string>
+              <string>nfs</string>
             </a>
           </choices>
         </hudson.model.ChoiceParameterDefinition>
@@ -362,6 +363,8 @@ esac
 
 if [[ $cinder_backend = " " ]] ; then
   cinder_backend=""
+elif [[ $cinder_backend = "nfs" ]] ; then
+  export nodenumberlonelynode=1
 fi
 
 
