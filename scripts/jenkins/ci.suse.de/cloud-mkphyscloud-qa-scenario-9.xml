@@ -207,7 +207,7 @@ sed -i -e "s,##networkingmode##,$networkingmode," scenario.yml
 
 [ $UPDATEBEFOREINSTALL == "true" ] &amp;&amp; export updatesteps="addupdaterepo runupdate"
 
-timeout --signal=ALRM 240m bash -x -c "source scripts/qa_crowbarsetup.sh ; onadmin_runlist $commands;"
+timeout --signal=ALRM 240m bash -x -c "source scripts/qa_crowbarsetup.sh ; onadmin_runlist $commands"
 ' || ret=$?
 
 echo "mkphyscloud ret=$ret (before scenario)"

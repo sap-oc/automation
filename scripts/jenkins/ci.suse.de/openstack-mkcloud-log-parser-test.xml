@@ -120,7 +120,7 @@ if [[ $github_pr ]] ; then
         ghremote=origin
         git config --get-all remote.${ghremote}.fetch | grep -q pull || \
             git config --add remote.${ghremote}.fetch "+refs/pull/*/head:refs/remotes/${ghremote}/pr/*"
-        git fetch $ghremote
+        git fetch $ghremote 2&gt;&amp;1 | grep -v '\[new ref\]'
         git checkout -t $ghremote/pr/$github_pr_id
         echo "we merge to always test what will end up in master"
         git merge master -m temp-merge-commit
@@ -141,7 +141,7 @@ echo "########################################################################"
 env
 echo "########################################################################"
 
-cat ${automationrepo}${sample_log_file}
+cat ${automationrepo}/${sample_log_file}
 </command>
     </hudson.tasks.Shell>
   </builders>
