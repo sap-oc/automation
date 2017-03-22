@@ -44,7 +44,7 @@ ci.opensuse.org: deploys all CI jobs on ci.opensuse.org
     <hudson.tasks.Shell>
       <command>## THIS JOB ONLY UPDATES JENKINS JOBS - NO WORKER CODE IN HERE - DO NOT DARE TO ADD SOME
 ## THUS RUNNING ON THE DEDICATED TRIGGER NODE
-[[ $NODE_NAME != 'cloud-trigger' ]] &amp;&amp; exit 99
+[[ $NODE_NAME =~ cloud.?trigger ]] || exit 99
 ##
 
 set -x
