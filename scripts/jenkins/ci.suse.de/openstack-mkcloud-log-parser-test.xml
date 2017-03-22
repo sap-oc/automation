@@ -7,8 +7,8 @@ analyzed by https://github.com/SUSE-Cloud/automation/blob/master/scripts/jenkins
 on mkcloudresultcheck@mkcloudresultcheck.cloud.suse.de every 15 minutes
 &lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <logRotator class="hudson.tasks.LogRotator">
-    <daysToKeep>300</daysToKeep>
-    <numToKeep>2000</numToKeep>
+    <daysToKeep>30</daysToKeep>
+    <numToKeep>200</numToKeep>
     <artifactDaysToKeep>-1</artifactDaysToKeep>
     <artifactNumToKeep>-1</artifactNumToKeep>
   </logRotator>
@@ -30,61 +30,12 @@ on mkcloudresultcheck@mkcloudresultcheck.cloud.suse.de every 15 minutes
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
-          <name>cloudsource</name>
-          <description>Can be something like develcloud6 (uses Devel:Cloud:*, see TESTHEAD parameter for Staging),  susecloud6 (uses SUSE:*), GM3 (uses the GM ISO)
+          <name>sample_log_file</name>
+          <description>Sample log from a previous run to emit as a fake job log,
+providing text to test the log parser rules against.
 </description>
-          <defaultValue>develcloud7</defaultValue>
+          <defaultValue>jenkins/ci.suse.de/openstack-mkcloud-sample-logs/develcloud7-PR-crowbar-openstack-868.txt</defaultValue>
         </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>mkcloudtarget</name>
-          <description>Set mkcloudtarget to define the mkcloud command line parameters.</description>
-          <defaultValue>all</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.ChoiceParameterDefinition>
-          <name>libvirt_type</name>
-          <description/>
-          <choices class="java.util.Arrays$ArrayList">
-            <a class="string-array">
-              <string>kvm</string>
-              <string>xen</string>
-              <string>hyperv</string>
-            </a>
-          </choices>
-        </hudson.model.ChoiceParameterDefinition>
-        <hudson.model.ChoiceParameterDefinition>
-          <name>networkingplugin</name>
-          <description/>
-          <choices class="java.util.Arrays$ArrayList">
-            <a class="string-array">
-              <string>openvswitch</string>
-              <string>linuxbridge</string>
-            </a>
-          </choices>
-        </hudson.model.ChoiceParameterDefinition>
-        <hudson.model.ChoiceParameterDefinition>
-          <name>networkingmode</name>
-          <description/>
-          <choices class="java.util.Arrays$ArrayList">
-            <a class="string-array">
-              <string>gre</string>
-              <string>vlan</string>
-              <string>vxlan</string>
-            </a>
-          </choices>
-        </hudson.model.ChoiceParameterDefinition>
-        <hudson.model.ChoiceParameterDefinition>
-          <name>storage_method</name>
-          <description>Select storage method: default (let mkcloud decide), none (enforce none)
-</description>
-          <choices class="java.util.Arrays$ArrayList">
-            <a class="string-array">
-              <string>default</string>
-              <string>none</string>
-              <string>swift</string>
-              <string>ceph</string>
-            </a>
-          </choices>
-        </hudson.model.ChoiceParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>github_pr</name>
           <description>String is a ':' separated list of these vaules: $ORG/$repo:$PR_ID:$SHA1:$BRANCH:$context Note:
@@ -92,205 +43,6 @@ SHA1 must be latest commit in PR, $context is optional  (only use if multiple ga
 </description>
           <defaultValue/>
         </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>job_name</name>
-          <description>This name will become the build name of the job. It will appear in the list of builds (webUI, RSS feed).
-</description>
-          <defaultValue>-no-name-</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.TextParameterDefinition>
-          <name>UPDATEREPOS</name>
-          <description>Update repositories (one URL per line)
-</description>
-          <defaultValue/>
-        </hudson.model.TextParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>UPDATEBEFOREINSTALL</name>
-          <description>add update repos before crowbar install</description>
-          <defaultValue>false</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>TESTHEAD</name>
-          <description>if non-empty, test latest version from Devel:Cloud (:1.0)
-</description>
-          <defaultValue>1</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>nodenumber</name>
-          <description>number of nodes excl. admin-node minimum 2=controller+compute</description>
-          <defaultValue>2</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>nodenumbercompute</name>
-          <description>Number of compute nodes</description>
-          <defaultValue/>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>want_tempest</name>
-          <description>can be used for force off(0) or on(1)</description>
-          <defaultValue/>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>tempestoptions</name>
-          <description>Additional options to pass to the "tempest run " step. The default is cloudversion
-specific but will default to a smoke run.
-</description>
-          <defaultValue/>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>want_horizon_integration_test</name>
-          <description>Execute selenium integration tests for Horizon after Tempest. This test is in beta, and
-a fail will not be considered for now.
-</description>
-          <defaultValue/>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>want_sles12</name>
-          <description>Set to 1 if sle12 nodes should be installed</description>
-          <defaultValue/>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>want_sles12sp2</name>
-          <description>deploy cloud7 with SP2 instead of SP1</description>
-          <defaultValue/>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>upgrade_cloudsource</name>
-          <description>In case of using upgrade, upgrade to that cloudsource version</description>
-          <defaultValue/>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>hacloud</name>
-          <description>If hacloud=1 then deploy a 4-node cluster</description>
-          <defaultValue/>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>WITHCROWBARREGISTER</name>
-          <description>boot up one lonely node in the admin network and register it with crowbar_register (image type depends on want_sles12 parameter)</description>
-          <defaultValue>false</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>want_all_ssl</name>
-          <description>set to 1 to deploy all cloud services with SSL aka HTTPS</description>
-          <defaultValue/>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.ChoiceParameterDefinition>
-          <name>cinder_backend</name>
-          <description/>
-          <choices class="java.util.Arrays$ArrayList">
-            <a class="string-array">
-              <string> </string>
-              <string>local</string>
-              <string>raw</string>
-              <string>rbd</string>
-              <string>netapp</string>
-            </a>
-          </choices>
-        </hudson.model.ChoiceParameterDefinition>
-        <hudson.model.BooleanParameterDefinition>
-          <name>want_cindermultibackend</name>
-          <description>enables deployment of more than one cinder backend</description>
-          <defaultValue>false</defaultValue>
-        </hudson.model.BooleanParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>cinder_netapp_login</name>
-          <description>the password for the user "openstack" as configured on the netapp server</description>
-          <defaultValue/>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>cinder_netapp_password</name>
-          <description>the password for the user "openstack" as configured on the netapp server</description>
-          <defaultValue/>
-        </hudson.model.StringParameterDefinition>
-        <org.jvnet.jenkins.plugins.nodelabelparameter.LabelParameterDefinition plugin="nodelabelparameter@">
-          <name>label</name>
-          <description>Default: openstack-mkcloud | Possible values:
-openstack-mkcloud-SLE11 (SLE11 host) |
-openstack-mkcloud-SLE12 (SLE12 host) | openstack-mkcloud-SLE12-aarch64 (SLE12 aarch64 host)
-</description>
-          <defaultValue>openstack-mkcloud</defaultValue>
-          <allNodesMatchingLabel>false</allNodesMatchingLabel>
-        </org.jvnet.jenkins.plugins.nodelabelparameter.LabelParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>want_node_aliases</name>
-          <description>List of aliases to assign to nodes.
-Takes all provided aliases and assign them to available nodes successively.
-Examples want_node_aliases='controller=1,ceph=2,compute=1'
-assigns the aliases to 4 nodes as controller, ceph1, ceph2, compute
- want_node_aliases='data=1,services=2,storage=2'
- assigns the aliases to 5 nodes as data, service1, service2,
- storage1, storage2
-</description>
-          <defaultValue/>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>scenario</name>
-          <description>Defines which scenario file should be used. Only works with cloud5 or newer.
-Currently only the 'batch' step uses such a file.
-</description>
-          <defaultValue/>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>want_docker</name>
-          <description>set to 1 to deploy with docker</description>
-          <defaultValue/>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>want_test_updates</name>
-          <description>allow disabling of test updates</description>
-          <defaultValue/>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>want_magnum</name>
-          <description>Deploy with Magnum</description>
-          <defaultValue/>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>want_barbican</name>
-          <description>Deploy with Barbican</description>
-          <defaultValue/>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>vcpus</name>
-          <description>number of vcpus for the compute nodes</description>
-          <defaultValue>2</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>want_sahara</name>
-          <description>set to 1 to deploy sahara</description>
-          <defaultValue/>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>want_rootfs</name>
-          <description>set to btrfs to deploy with btrfs</description>
-          <defaultValue/>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>want_postgresql</name>
-          <description>set to 1 to deploy with postgresql</description>
-          <defaultValue/>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>want_efi</name>
-          <description>Set to UEFI boot admin node</description>
-          <defaultValue/>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>want_murano</name>
-          <description>set to 1 to deploy murano</description>
-          <defaultValue/>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>want_aodh</name>
-          <description>set to 0 to not deploy aodh</description>
-          <defaultValue>1</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.TextParameterDefinition>
-          <name>custom_settings</name>
-          <description>This holds shell code and will be executed before calling mkcloud. This should not be used by default or regularly. It is meant to test PRs with special configurations.
-</description>
-          <defaultValue/>
-        </hudson.model.TextParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
     <com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty plugin="build-failure-analyzer@">
@@ -317,96 +69,8 @@ export artifacts_dir=$WORKSPACE/.artifacts
 rm -rf $artifacts_dir
 mkdir -p $artifacts_dir
 touch $artifacts_dir/.ignore
-export log_dir=$artifacts_dir/mkcloud_log
 
 export automationrepo=~/github.com/SUSE-Cloud/automation
-jtsync=${automationrepo}/scripts/jtsync/jtsync.rb
-export debug_qa_crowbarsetup=1
-export cephvolumenumber=1 # one disk is either cinder raw, ceph-osd or swift storage
-export debug=0
-export want_neutronsles12=1
-export want_mtu_size=8900
-[[ $libvirt_type = hyperv ]] &amp;&amp; want_mtu_size=1500 # windows-PXE-bootloader seems to not like jumbo-packets
-export rally_server=backup.cloudadm.qa.suse.de
-# to not fail when two concurrent zypper runs happen:
-export ZYPP_LOCK_TIMEOUT=120
-
-case $cloudsource in
-    GM4|GM4+up|GM5|GM5+up)
-        echo "Not setting want_ldap=1"
-        ;;
-    develcloud6)
-        if [[ $mkcloudtarget =~ upgrade ]]; then
-            echo "Unsetting want_ldap for upgrade jobs until hybrid backend is ported to Mitaka"
-            unset want_ldap
-        fi
-        ;;
-    M*|develcloud7|mitakacloud7|susecloud7)
-        if [[ $mkcloudtarget =~ upgrade ]]; then
-            echo "Unsetting want_ldap for upgrade jobs until hybrid backend is migrated to domain-specific backends"
-            unset want_ldap
-        else
-            [[ $nodenumber == 2 &amp;&amp; -z "$scenario" ]] &amp;&amp; export want_ldap=1
-        fi
-        ;;
-    *)
-        [[ $nodenumber == 2 &amp;&amp; -z "$scenario" ]] &amp;&amp; export want_ldap=1
-        ;;
-esac
-
-
-if [[ $cinder_backend = " " ]] ; then
-  cinder_backend=""
-fi
-
-
-# HAcloud
-if [[ $hacloud == 1 ]] ; then
-  export clusterconfig="data+services+network=2"
-  if [[ $nodenumber &lt; 4 ]] ; then
-    export nodenumber=4
-  fi
-
-  # for now disable ceph deployment in HA mode explicitly
-  # it would need 5 nodes (2 for the cluster + 3 nodes for compute and ceph)
-  #### temorarily allow ceph in HA (test if it works)
-  #export want_ceph=0
-  #export cephvolumenumber=0
-fi
-
-
-#storage
-case "$storage_method" in
-  none)
-    want_ceph=0
-    want_swift=0
-    ;;
-  swift)
-    want_ceph=0
-    want_swift=1
-    ;;
-  ceph)
-    want_ceph=1
-    want_swift=0
-    if [[ $nodenumber &lt; 5 ]] ; then
-      export nodenumber=5
-    fi
-    cephvolumenumber=2
-    ;;
-  *)
-    unset want_ceph
-    unset want_swift
-esac
-export want_ceph
-export want_swift
-
-if [ ! -z "$UPDATEREPOS" ] ; then
-  # testing update only makes sense with GM and without TESTHEAD
-#  unset TESTHEAD
-#  export cloudsource=GM
-  export UPDATEREPOS=${UPDATEREPOS//$'\n'/+}
-fi
-
 
 # automation bootstrapping
 if ! [ -e ${automationrepo}/scripts/jenkins/update_automation ] ; then
@@ -416,10 +80,10 @@ fi
 # fetch the latest automation updates
 ${automationrepo}/scripts/jenkins/update_automation #NO PARAMETERS HERE ANY MORE!!!
 
-function mkcloudgating_trap()
-{
-    $ghs -a set-status -s "failure" -r $github_pr_repo -t $BUILD_URL -c $github_pr_sha --context $ghs_context
-}
+#function mkcloudgating_trap()
+#{
+#    $ghs -a set-status -s "failure" -r $github_pr_repo -t $BUILD_URL -c $github_pr_sha --context $ghs_context
+#}
 
 ## mkcloud github PR gating
 if [[ $github_pr ]] ; then
@@ -437,12 +101,12 @@ if [[ $github_pr ]] ; then
     ghs=${automationrepo}/scripts/github-status/github-status.rb
     zypper -n install "rubygem(netrc)" "rubygem(octokit)"
 
-    if ! $ghs -r $github_pr_repo -a is-latest-sha -p $github_pr_id -c $github_pr_sha ; then
-        $ghs -a set-status -s "error" -t $BUILD_URL -r $github_pr_repo -c $github_pr_sha -m "SHA1 mismatch, newer commit exists" --context $ghs_context
-        exit 1
-    fi
+    #if ! $ghs -r $github_pr_repo -a is-latest-sha -p $github_pr_id -c $github_pr_sha ; then
+    #    $ghs -a set-status -s "error" -t $BUILD_URL -r $github_pr_repo -c $github_pr_sha -m "SHA1 mismatch, newer commit exists" --context $ghs_context
+    #    exit 1
+    #fi
 
-    trap "mkcloudgating_trap" ERR
+    #trap "mkcloudgating_trap" ERR
 
     # Support for automation self-gating
     if [[ "$github_pr_repo" = "SUSE-Cloud/automation" ]]; then
@@ -461,13 +125,13 @@ if [[ $github_pr ]] ; then
         echo "we merge to always test what will end up in master"
         git merge master -m temp-merge-commit
         # show latest commit in log to see what's really tested
-        git --no-pager show
+        #git --no-pager show
         popd
     elif [[ "$github_pr_repo" = "SUSE-Cloud/cct" ]]; then
         export want_cct_pr=$github_pr_id
     fi
 
-    $ghs -a set-status -s "pending" -r $github_pr_repo -t $BUILD_URL -c $github_pr_sha --context $ghs_context -m "Started PR gating"
+    #$ghs -a set-status -s "pending" -r $github_pr_repo -t $BUILD_URL -c $github_pr_sha --context $ghs_context -m "Started PR gating"
 
 fi
 
@@ -477,65 +141,7 @@ echo "########################################################################"
 env
 echo "########################################################################"
 
-MKCLOUDTARGET=$mkcloudtarget
-[ $UPDATEBEFOREINSTALL == "true" ] &amp;&amp; MKCLOUDTARGET='cleanup prepare setupadmin addupdaterepo instcrowbar setupcompute instcompute proposal testsetup'
-
-[ $(uname -m) = s390x ] &amp;&amp; WITHCROWBARREGISTER=true
-if [ $WITHCROWBARREGISTER == "true" ] ; then
-  export nodenumberlonelynode=1
-  [ $(uname -m) = s390x ] &amp;&amp; {
-      export nodenumberlonelynode=$nodenumber
-      export nodenumber=0
-      export controller_node_memory=8388608
-      export compute_node_memory=6291456
-  }
-  MKCLOUDTARGET+=" setuplonelynodes crowbar_register"
-fi
-
-[ $(uname -m) = aarch64 ] &amp;&amp; {
-    export vcpus=16
-}
-
-pushd ~/pool/
-    # free up a pool if more than one is reserved
-    # policy allows only one reservation per host at the moment
-    ls -1 | grep -v "^[0-9]\+$" | sort -R | head -n -1 | while read p ; do mv $p ${p%%.*} ; done
-popd
-
-starttime=`date +%s`
-
-mkcloudwrapper="${automationrepo}/scripts/mkcloudhost/allocpool ${automationrepo}/scripts/mkcloudhost/mkcloude"
-#FIXME - drop next 3 lines once the change in allocpool is merged
-if grep -q "exec.*mkcloude" ${automationrepo}/scripts/mkcloudhost/allocpool ; then
-    mkcloudwrapper=${automationrepo}/scripts/mkcloudhost/allocpool
-fi
-
-# Shut down the cloud to save resources
-##MKCLOUDTARGET+=" cleanup"
-
-export clouddescription="Jenkins Build: $BUILD_NUMBER / $JOB_NAME"
-
-$custom_settings
-
-perl -e "alarm 6*60*60 ; exec '${mkcloudwrapper} bash -x ${automationrepo}/scripts/mkcloud setuphost $(echo -n $MKCLOUDTARGET) ' ; print qq{$!\n} ; exit 127 " | tee $artifacts_dir/mkcloud_short_stdout.log
-ret=${PIPESTATUS[0]}
-if [[ $ret != 0 ]] ; then
-    if [[ $github_pr_sha ]] ; then
-      mkcloudgating_trap
-    else
-      $jtsync --ci suse --job $JOB_NAME 1
-    fi
-    echo "mkcloud ret=$ret"
-    exit $ret # check return code before tee
-fi
-
-# report mkcloud-gating status or jenkins trello status
-if [[ $github_pr_sha ]] ; then
-  $ghs -r $github_pr_repo -a set-status -s "success" -t $BUILD_URL -c $github_pr_sha --context $ghs_context -m "PR gating succeeded"
-  trap "-" ERR
-else
-  $jtsync --ci suse --job $JOB_NAME 0
-fi
+cat ${automationrepo}${sample_log_file}
 </command>
     </hudson.tasks.Shell>
   </builders>
