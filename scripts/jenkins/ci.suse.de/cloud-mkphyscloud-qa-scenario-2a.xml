@@ -318,9 +318,9 @@ if [ $ret == "0" ]; then
     # ----- End of SBD
 EOSCRIPT
 
-  chmod +x /tmp/sbd_prepare_$admin
+  #chmod +x /tmp/sbd_prepare_$admin
 
-  scp /tmp/sbd_prepare_$admin root@$admin:sbd_prepare
+  #scp /tmp/sbd_prepare_$admin root@$admin:sbd_prepare
 
   # Rerun chef-client
   ssh roott@$admin 'chef-client'
