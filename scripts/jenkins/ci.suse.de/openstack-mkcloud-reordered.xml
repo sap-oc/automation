@@ -1,31 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
   <actions/>
-  <description>&lt;!-- Managed by Jenkins Job Builder --&gt;
-This job runs https://github.com/SUSE-Cloud/automation/blob/master/scripts/mkcloud results are
-analyzed by https://github.com/SUSE-Cloud/automation/blob/master/scripts/jenkins/mkcloudresultcheck.pl
-on mkcloudresultcheck@mkcloudresultcheck.cloud.suse.de every 15 minutes
-&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
-  <logRotator class="hudson.tasks.LogRotator">
+  <description>This job runs https://github.com/SUSE-Cloud/automation/blob/master/scripts/mkcloud
+Results are analyzed by https://github.com/SUSE-Cloud/automation/blob/master/scripts/jenkins/mkcloudresultcheck.pl on mkcloudresultcheck@mkcloudresultcheck.cloud.suse.de every 15 minutes&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <keepDependencies>false</keepDependencies>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <concurrentBuild>true</concurrentBuild>
+  <assignedNode>openstack-mkcloud</assignedNode>
+  <canRoam>false</canRoam>
+  <logRotator>
     <daysToKeep>300</daysToKeep>
     <numToKeep>2000</numToKeep>
     <artifactDaysToKeep>-1</artifactDaysToKeep>
     <artifactNumToKeep>-1</artifactNumToKeep>
   </logRotator>
-  <keepDependencies>false</keepDependencies>
   <properties>
     <hudson.security.AuthorizationMatrixProperty>
-      <permission>hudson.model.Item.Cancel:cloud</permission>
-      <permission>hudson.model.Item.Delete:cloud</permission>
-      <permission>hudson.model.Item.Read:cloud</permission>
-      <permission>hudson.model.Item.Read:anonymous</permission>
-      <permission>hudson.model.Run.Delete:cloud</permission>
-      <permission>hudson.model.Item.Workspace:cloud</permission>
       <permission>hudson.model.Item.Build:cloud</permission>
-      <permission>hudson.scm.SCM.Tag:cloud</permission>
+      <permission>hudson.model.Item.Cancel:cloud</permission>
       <permission>hudson.model.Item.Configure:cloud</permission>
+      <permission>hudson.model.Item.Delete:cloud</permission>
       <permission>hudson.model.Item.Discover:cloud</permission>
+      <permission>hudson.model.Item.Read:cloud</permission>
+      <permission>hudson.model.Item.Workspace:cloud</permission>
+      <permission>hudson.model.Run.Delete:cloud</permission>
       <permission>hudson.model.Run.Update:cloud</permission>
+      <permission>hudson.scm.SCM.Tag:cloud</permission>
+      <permission>hudson.model.Item.Read:anonymous</permission>
     </hudson.security.AuthorizationMatrixProperty>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
@@ -36,59 +38,48 @@ on mkcloudresultcheck@mkcloudresultcheck.cloud.suse.de every 15 minutes
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>github_pr</name>
-          <description>String is a ':' separated list of these vaules: $ORG/$repo:$PR_ID:$SHA1:$BRANCH:$context Note:
-SHA1 must be latest commit in PR, $context is optional  (only use if multiple gating runs needed per PR)
-</description>
+          <description>String is a ':' separated list of these values: $ORG/$repo:$PR_ID:$SHA1:$BRANCH:$context
+Note: SHA1 must be latest commit in PR, $context is optional (only use if multiple gating runs needed per PR)</description>
           <defaultValue/>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>job_name</name>
-          <description>This name will become the build name of the job. It will appear in the list of builds (webUI, RSS feed).
-</description>
+          <description>This name will become the build name of the job. It will appear in the list of builds (webUI, RSS feed).</description>
           <defaultValue>-no-name-</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>scenario</name>
-          <description>Defines which scenario file should be used. Only works with cloud5 or newer.
-Currently only the 'batch' step uses such a file.
-</description>
+          <description>Defines which scenario file should be used. Only works with cloud5 or newer.  Currently only the 'batch' step uses such a file.</description>
           <defaultValue/>
         </hudson.model.StringParameterDefinition>
-        <org.jvnet.jenkins.plugins.nodelabelparameter.LabelParameterDefinition plugin="nodelabelparameter@">
+        <org.jvnet.jenkins.plugins.nodelabelparameter.LabelParameterDefinition>
           <name>label</name>
-          <description>Default: openstack-mkcloud | Possible values:
-openstack-mkcloud-SLE11 (SLE11 host) |
-openstack-mkcloud-SLE12 (SLE12 host) | openstack-mkcloud-SLE12-aarch64 (SLE12 aarch64 host)
-</description>
+          <description>Default: openstack-mkcloud | Possible values: openstack-mkcloud-SLE11 (SLE11 host), openstack-mkcloud-SLE12 (SLE12 host), openstack-mkcloud-SLE12-aarch64 (SLE12 aarch64 host)</description>
           <defaultValue>openstack-mkcloud</defaultValue>
-          <allNodesMatchingLabel>false</allNodesMatchingLabel>
         </org.jvnet.jenkins.plugins.nodelabelparameter.LabelParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>cloudsource</name>
-          <description>Can be something like develcloud6 (uses Devel:Cloud:*, see TESTHEAD parameter for Staging),  susecloud6 (uses SUSE:*), GM3 (uses the GM ISO)
-</description>
+          <description>Can be something like develcloud6 (uses Devel:Cloud:*, see TESTHEAD parameter for Staging), susecloud6 (uses SUSE:*), GM3 (uses the GM ISO)</description>
           <defaultValue>develcloud7</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.TextParameterDefinition>
           <name>UPDATEREPOS</name>
-          <description>Update repositories (one URL per line)
-</description>
+          <description>Update repositories (one URL per line)</description>
           <defaultValue/>
         </hudson.model.TextParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>UPDATEBEFOREINSTALL</name>
-          <description>add update repos before crowbar install</description>
+          <description>Add update repos before crowbar install</description>
           <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>TESTHEAD</name>
-          <description>if non-empty, test latest version from Devel:Cloud (:1.0)
-</description>
+          <description>If non-empty, test latest version from Devel:Cloud (:1.0)</description>
           <defaultValue>1</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>want_test_updates</name>
-          <description>allow disabling of test updates</description>
+          <description>Allow disabling of test updates</description>
           <defaultValue/>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -98,7 +89,7 @@ openstack-mkcloud-SLE12 (SLE12 host) | openstack-mkcloud-SLE12-aarch64 (SLE12 aa
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>want_sles12sp2</name>
-          <description>deploy cloud7 with SP2 instead of SP1</description>
+          <description>Deploy cloud7 with SP2 instead of SP1</description>
           <defaultValue/>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -119,7 +110,7 @@ openstack-mkcloud-SLE12 (SLE12 host) | openstack-mkcloud-SLE12-aarch64 (SLE12 aa
         </hudson.model.ChoiceParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>nodenumber</name>
-          <description>number of nodes excl. admin-node minimum 2=controller+compute</description>
+          <description>Number of nodes excluding admin-node.  Minimum is 2 (controller+compute)</description>
           <defaultValue>2</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -129,19 +120,14 @@ openstack-mkcloud-SLE12 (SLE12 host) | openstack-mkcloud-SLE12-aarch64 (SLE12 aa
         </hudson.model.StringParameterDefinition>
         <hudson.model.BooleanParameterDefinition>
           <name>WITHCROWBARREGISTER</name>
-          <description>boot up one lonely node in the admin network and register it with crowbar_register (image type depends on want_sles12 parameter)</description>
+          <description>Boot up one node in the admin network from a preinstalled OS image, and register it with crowbar_register (image type depends on want_sles12 parameter)</description>
           <defaultValue>false</defaultValue>
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>want_node_aliases</name>
-          <description>List of aliases to assign to nodes.
-Takes all provided aliases and assign them to available nodes successively.
-Examples want_node_aliases='controller=1,ceph=2,compute=1'
-assigns the aliases to 4 nodes as controller, ceph1, ceph2, compute
- want_node_aliases='data=1,services=2,storage=2'
- assigns the aliases to 5 nodes as data, service1, service2,
- storage1, storage2
-</description>
+          <description>List of aliases to assign to nodes.  Takes all provided aliases and assign them to available nodes successively. Examples:
+want_node_aliases='controller=1,ceph=2,compute=1' assigns the aliases to 4 nodes as controller, ceph1, ceph2, compute
+want_node_aliases='data=1,services=2,storage=2' assigns the aliases to 5 nodes as data, service1, service2, storage1, storage2</description>
           <defaultValue/>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -151,12 +137,12 @@ assigns the aliases to 4 nodes as controller, ceph1, ceph2, compute
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>clusterconfig</name>
-          <description>the cluster configuration to pass to the mkcloud script</description>
+          <description>Cluster configuration to pass to the mkcloud script</description>
           <defaultValue/>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>vcpus</name>
-          <description>number of vcpus for the compute nodes</description>
+          <description>Number of vcpus for the compute nodes</description>
           <defaultValue>2</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -166,17 +152,17 @@ assigns the aliases to 4 nodes as controller, ceph1, ceph2, compute
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>want_rootfs</name>
-          <description>set to btrfs to deploy with btrfs</description>
+          <description>Set to btrfs to deploy with btrfs</description>
           <defaultValue/>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>want_postgresql</name>
-          <description>set to 1 to deploy with postgresql</description>
+          <description>Set to 1 to deploy with postgresql</description>
           <defaultValue/>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>want_all_ssl</name>
-          <description>set to 1 to deploy all cloud services with SSL aka HTTPS</description>
+          <description>Set to 1 to deploy all cloud services with SSL aka HTTPS</description>
           <defaultValue/>
         </hudson.model.StringParameterDefinition>
         <hudson.model.ChoiceParameterDefinition>
@@ -234,12 +220,12 @@ assigns the aliases to 4 nodes as controller, ceph1, ceph2, compute
         </hudson.model.BooleanParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>cinder_netapp_login</name>
-          <description>the password for the user "openstack" as configured on the netapp server</description>
+          <description>Password for the user "openstack" as configured on the netapp server</description>
           <defaultValue/>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>cinder_netapp_password</name>
-          <description>the password for the user "openstack" as configured on the netapp server</description>
+          <description>Password for the user "openstack" as configured on the netapp server</description>
           <defaultValue/>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -249,16 +235,12 @@ assigns the aliases to 4 nodes as controller, ceph1, ceph2, compute
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>tempestoptions</name>
-          <description>Additional options to pass to the "tempest run " step. The default is cloudversion
-specific but will default to a smoke run.
-</description>
+          <description>Additional options to pass to the "tempest run " step. The default is cloudversion specific but will default to a smoke run.</description>
           <defaultValue/>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>want_horizon_integration_test</name>
-          <description>Execute selenium integration tests for Horizon after Tempest. This test is in beta, and
-a fail will not be considered for now.
-</description>
+          <description>Execute selenium integration tests for Horizon after Tempest. This test is in beta, and a fail will not be considered for now.</description>
           <defaultValue/>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
@@ -291,24 +273,25 @@ a fail will not be considered for now.
           <description>set to 0 to not deploy aodh</description>
           <defaultValue>1</defaultValue>
         </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>want_nodesupgrade</name>
+          <description>set to 0 to not upgrade nodes, only admin server</description>
+          <defaultValue>1</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>want_ping_running_instances</name>
+          <description>set to 1 to ping running instances during the upgrade</description>
+          <defaultValue/>
+        </hudson.model.StringParameterDefinition>
         <hudson.model.TextParameterDefinition>
           <name>custom_settings</name>
-          <description>This holds shell code and will be executed before calling mkcloud. This should not be used by default or regularly. It is meant to test PRs with special configurations.
-</description>
+          <description>This holds shell code and will be executed before calling mkcloud. This should not be used by default or regularly. It is meant to test PRs with special configurations.</description>
           <defaultValue/>
         </hudson.model.TextParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
-    <com.synopsys.arc.jenkins.plugins.ownership.jobs.JobOwnerJobProperty plugin="ownership@"/>
   </properties>
   <scm class="hudson.scm.NullSCM"/>
-  <assignedNode>openstack-mkcloud</assignedNode>
-  <canRoam>false</canRoam>
-  <disabled>false</disabled>
-  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
-  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-  <triggers/>
-  <concurrentBuild>true</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
       <command>set -x
@@ -547,8 +530,8 @@ fi
     </hudson.tasks.Shell>
   </builders>
   <publishers>
-    <hudson.plugins.logparser.LogParserPublisher plugin="log-parser@">
-      <unstableOnWarning>true</unstableOnWarning>
+    <hudson.plugins.logparser.LogParserPublisher>
+      <unstableOnWarning>false</unstableOnWarning>
       <failBuildOnError>false</failBuildOnError>
       <showGraphs>true</showGraphs>
       <useProjectRule>true</useProjectRule>
@@ -561,25 +544,20 @@ fi
       <onlyIfSuccessful>false</onlyIfSuccessful>
       <fingerprint>false</fingerprint>
       <defaultExcludes>true</defaultExcludes>
-      <caseSensitive>true</caseSensitive>
     </hudson.tasks.ArtifactArchiver>
   </publishers>
   <buildWrappers>
-    <hudson.plugins.timestamper.TimestamperBuildWrapper plugin="timestamper@"/>
-    <org.jenkinsci.plugins.buildnamesetter.BuildNameSetter plugin="build-name-setter@">
+    <hudson.plugins.timestamper.TimestamperBuildWrapper/>
+    <org.jenkinsci.plugins.buildnamesetter.BuildNameSetter>
       <template>#${BUILD_NUMBER}: ${ENV,var="job_name"}</template>
-      <runAtStart>true</runAtStart>
-      <runAtEnd>true</runAtEnd>
     </org.jenkinsci.plugins.buildnamesetter.BuildNameSetter>
-    <hudson.plugins.build__timeout.BuildTimeoutWrapper plugin="build-timeout@1.18">
-      <strategy class="hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy">
-        <timeoutMinutes>60</timeoutMinutes>
-      </strategy>
-      <operationList class="java.util.Arrays$ArrayList">
-        <a class="hudson.plugins.build_timeout.BuildTimeOutOperation-array">
-          <hudson.plugins.build__timeout.operations.AbortOperation/>
-        </a>
-      </operationList>
+    <hudson.plugins.build__timeout.BuildTimeoutWrapper>
+      <timeoutMinutes>60</timeoutMinutes>
+      <failBuild>false</failBuild>
+      <writingDescription>job aborted due to 60 minutes of inactivity.</writingDescription>
+      <timeoutPercentage>0</timeoutPercentage>
+      <timeoutMinutesElasticDefault>3</timeoutMinutesElasticDefault>
+      <timeoutType>no-activity</timeoutType>
     </hudson.plugins.build__timeout.BuildTimeoutWrapper>
   </buildWrappers>
 </project>
