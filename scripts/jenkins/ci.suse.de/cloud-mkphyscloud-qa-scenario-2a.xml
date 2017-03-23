@@ -314,6 +314,7 @@ EOSCRIPT
       wait_for 20 10 "ssh $node \"zypper refresh\" "
     done
   '
+  exit 0;
 
   ssh root@$admin  "
   export cloud=$cloud ;
@@ -329,8 +330,7 @@ EOSCRIPT
   source scripts/qa_crowbarsetup.sh
   ./sbd_prepare
 
-  #crowbar batch --timeout 2400 build scenario.yml
-  ' || ret=$?
+  crowbar batch --timeout 2400 build scenario.yml' || ret=$?
 
   if [ $ret != 0 ] ; then
     ssh root@$admin '
