@@ -277,14 +277,12 @@ if [ $ret == "0" ]; then
 
     chmod +x scripts/iscsictl.py
     
-    shared_storage=10.162.64.10
-
-    ./scripts/iscsictl.py --service initiator --target_host $shared_storage --host controller1 --no-key --id id-qa02
-    ./scripts/iscsictl.py --service initiator --target_host $shared_storage --host controller2 --no-key --id id-qa02
-    ./scripts/iscsictl.py --service initiator --target_host $shared_storage --host data1       --no-key --id id-qa02
-    ./scripts/iscsictl.py --service initiator --target_host $shared_storage --host data2       --no-key --id id-qa02
-    ./scripts/iscsictl.py --service initiator --target_host $shared_storage --host network1    --no-key --id id-qa02
-    ./scripts/iscsictl.py --service initiator --target_host $shared_storage --host network2    --no-key --id id-qa02
+    ./scripts/iscsictl.py --service initiator --target_host "10.162.64.10" --host controller1 --no-key --id id-qa02
+    ./scripts/iscsictl.py --service initiator --target_host "10.162.64.10" --host controller2 --no-key --id id-qa02
+    ./scripts/iscsictl.py --service initiator --target_host "10.162.64.10" --host data1       --no-key --id id-qa02
+    ./scripts/iscsictl.py --service initiator --target_host "10.162.64.10" --host data2       --no-key --id id-qa02
+    ./scripts/iscsictl.py --service initiator --target_host "10.162.64.10" --host network1    --no-key --id id-qa02
+    ./scripts/iscsictl.py --service initiator --target_host "10.162.64.10" --host network2    --no-key --id id-qa02
 
     # preparation of SBD for services nodes
     SBD_DEV_SERVICES=\$(ssh controller1 echo '/dev/disk/by-id/scsi-\$(lsscsi -i | grep LIO | tr -s " " |cut -d " " -f7)')
