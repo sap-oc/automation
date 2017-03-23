@@ -248,8 +248,8 @@ if [ "$ret" = "0" ]; then
     # ----- End of SBD
 EOSCRIPT
 
-  chmod +x /tmp/sbd_prepare_$admin
-  scp /tmp/sbd_prepare_$admin root@$admin:sbd_prepare
+  #chmod +x /tmp/sbd_prepare_$admin
+  #scp /tmp/sbd_prepare_$admin root@$admin:sbd_prepare
 
   # Check if zypper is used by other application
   ssh root@$admin '
