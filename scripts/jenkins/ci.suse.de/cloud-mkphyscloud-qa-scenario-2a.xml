@@ -50,6 +50,11 @@ Warning: It will wipe all machines!
           <defaultValue>10.162.64.10</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
+          <name>kvm-compute-nodes</name>
+          <description>Mandatory, set other number of kvm compute nodes</description>
+          <defaultValue>1</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
           <name>repo_owner</name>
           <description>Mandatory, automation repo owner/organization</description>
           <defaultValue>SUSE-Cloud</defaultValue>
@@ -189,7 +194,7 @@ touch $artifacts_dir/.ignore
 # check that netapp backend server is available
 ping -c 3 $netapp_server || ret=$?
 
-if [ $ret != "0" ] ; then
+if [ $ret != 0 ] ; then 
   echo "netapp server is unavailable!"
   exit 1
 fi
@@ -231,8 +236,8 @@ export nodenumber=$nodenumber ;
 export hacloud=$hacloud ;
 export clusterconfig=$clusterconfig ;
 export shared_storage_ip=$shared_storage_ip ;
-export want_node_aliases=controller=2,data=2,network=2,computekvm=1 ;
-export want_node_roles=controller=2,storage=2,network=2,compute=1 ;
+export want_node_aliases=controller=2,data=2,network=2,computekvm=$kvm-compute-nodes ;
+export want_node_roles=controller=2,storage=2,network=2,compute=$kvm-compute-nodes ;
 export scenario=\"/root/scenario.yml\" ;
 export netapp_password=$netapp_password ;
 export netapp_server=$netapp_server ;
