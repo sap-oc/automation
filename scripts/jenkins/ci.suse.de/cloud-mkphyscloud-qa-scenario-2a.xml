@@ -50,16 +50,6 @@ Warning: It will wipe all machines!
           <defaultValue>10.162.66.1</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>sbd_ip</name>
-          <description>Mandatory, IP of iscsi target for sbd</description>
-          <defaultValue>10.162.64.10</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
-          <name>kvm-compute-nodes</name>
-          <description>Mandatory, set other number of kvm compute nodes</description>
-          <defaultValue>1</defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
           <name>repo_owner</name>
           <description>Mandatory, automation repo owner/organization</description>
           <defaultValue>SUSE-Cloud</defaultValue>
@@ -185,7 +175,7 @@ export artifacts_dir=$WORKSPACE/.artifacts
 rm -rf $artifacts_dir
 mkdir -p $artifacts_dir
 touch $artifacts_dir/.ignore
-
+  
 # check that netapp backend server is available
 ping -c 3 $netapp_server || ret=$?
 
@@ -231,8 +221,8 @@ export nodenumber=$nodenumber ;
 export hacloud=$hacloud ;
 export clusterconfig=$clusterconfig ;
 export shared_storage_ip=$shared_storage_ip ;
-export want_node_aliases=controller=2,data=2,network=2,computekvm=$kvm-compute-nodes ;
-export want_node_roles=controller=2,storage=2,network=2,compute=$kvm-compute-nodes ;
+export want_node_aliases=controller=2,data=2,network=2,computekvm=1 ;
+export want_node_roles=controller=2,storage=2,network=2,compute=1 ;
 export scenario=\"/root/scenario.yml\" ;
 export netapp_password=$netapp_password ;
 export netapp_server=$netapp_server ;
@@ -267,13 +257,14 @@ if [ $ret == "0" ]; then
 
     chmod +x scripts/iscsictl.py
 
-    ./scripts/iscsictl.py --service initiator --target_host $sbd_ip --host controller1 --no-key --id id-qa$hw_number
-    ./scripts/iscsictl.py --service initiator --target_host $sbd_ip --host controller2 --no-key --id id-qa$hw_number
-    ./scripts/iscsictl.py --service initiator --target_host $sbd_ip --host data1       --no-key --id id-qa$hw_number
-    ./scripts/iscsictl.py --service initiator --target_host $sbd_ip --host data2       --no-key --id id-qa$hw_number
-    ./scripts/iscsictl.py --service initiator --target_host $sbd_ip --host network1    --no-key --id id-qa$hw_number
-    ./scripts/iscsictl.py --service initiator --target_host $sbd_ip --host network2    --no-key --id id-qa$hw_number
-
+    ./scripts/iscsictl.py --service target --host \$(hostname) --no-key
+    ./scripts/iscsictl.py --service initiator --target_host \$(hostname) --host controller1 --no-key
+    ./scripts/iscsictl.py --service initiator --target_host \$(hostname) --host controller2 --no-key
+    ./scripts/iscsictl.py --service initiator --target_host \$(hostname) --host data1 --no-key
+    ./scripts/iscsictl.py --service initiator --target_host \$(hostname) --host data2 --no-key
+    ./scripts/iscsictl.py --service initiator --target_host \$(hostname) --host network1 --no-key
+    ./scripts/iscsictl.py --service initiator --target_host \$(hostname) --host network2 --no-key
+    
     # preparation of SBD for services nodes
     SBD_DEV_SERVICES=\$(ssh controller1 echo '/dev/disk/by-id/scsi-\$(lsscsi -i | grep LIO | tr -s " " |cut -d " " -f7)')
     ssh controller1 "zypper --non-interactive install sbd; sbd -d \$SBD_DEV_SERVICES create"
@@ -296,14 +287,14 @@ if [ $ret == "0" ]; then
     sed -i "s|@@sbd_device_network@@|\${SBD_DEV_NETWORK}|g" scenario.yml
 
     # watchdog configuration
-    ssh controller1 "modprobe softdog; echo softdog &gt; /etc/modules-load.d/watchdog.conf"
-    ssh controller2 "modprobe softdog; echo softdog &gt; /etc/modules-load.d/watchdog.conf"
+    ssh controller1 modprobe softdog; echo softdog &gt; /etc/modules-load.d/watchdog.conf
+    ssh controller2 modprobe softdog; echo softdog &gt; /etc/modules-load.d/watchdog.conf
 
-    ssh data1 "modprobe softdog; echo softdog &gt; /etc/modules-load.d/watchdog.conf"
-    ssh data2 "modprobe softdog; echo softdog &gt; /etc/modules-load.d/watchdog.conf"
+    ssh data1 modprobe softdog; echo softdog &gt; /etc/modules-load.d/watchdog.conf
+    ssh data2 modprobe softdog; echo softdog &gt; /etc/modules-load.d/watchdog.conf
 
-    ssh network1 "modprobe softdog; echo softdog &gt; /etc/modules-load.d/watchdog.conf"
-    ssh network2 "modprobe softdog; echo softdog &gt; /etc/modules-load.d/watchdog.conf"
+    ssh network1 modprobe softdog; echo softdog &gt; /etc/modules-load.d/watchdog.conf
+    ssh network2 modprobe softdog; echo softdog &gt; /etc/modules-load.d/watchdog.conf
 
     # ----- End of SBD
 EOSCRIPT
@@ -311,9 +302,6 @@ EOSCRIPT
   chmod +x /tmp/sbd_prepare_$admin
 
   scp /tmp/sbd_prepare_$admin root@$admin:sbd_prepare
-
-  # Rerun chef-client to avoid frequent failures here and update bind records, see bsc#1021900
-  ssh roott@$admin 'chef-client'
 
   # Check if zypper is used by other application
   ssh root@$admin '
