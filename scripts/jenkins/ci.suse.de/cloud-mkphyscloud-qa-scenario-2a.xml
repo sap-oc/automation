@@ -1,47 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
   <actions/>
-  <description>&lt;b&gt;This job is managed by JJB! Changes must be done in&#13;
-&lt;a href='https://github.com/SUSE-Cloud/automation/tree/master/jenkins/ci.suse.de/'&gt;git&lt;/a&gt;&#13;
-&lt;/b&gt;&#13;
-&#13;
-This job will redeploy scenario-2a:&#13;
-  - total 7 nodes including admin node&#13;
-  - database: default, postgresql&#13;
-  - pacemaker: 3 clusters with 2 nodes (SBD)&#13;
-  - keystone UUID&#13;
-  - swift (allow public container, enable object versioning)&#13;
-  - glance (storage swift)&#13;
-  - nova: ssl, libvirt migration enabled, shared storage, kvm kernel samepage merging, 1 KVM&#13;
-  - cinder: Local file&#13;
-  - neutron: linuxbridge or OVS &#13;
-  - manila: NetApp backend (we expect that a vserver 'cloud-manila-svm' is available on the 'netapp-n1-e0m.cloud.suse.de' server)&#13;
-&#13;
-Warning: It will wipe all machines!&#13;
+  <description>&lt;b&gt;This job is managed by JJB! Changes must be done in
+&lt;a href='https://github.com/SUSE-Cloud/automation/tree/master/jenkins/ci.suse.de/'&gt;git&lt;/a&gt;
+&lt;/b&gt;
+
+This job will redeploy scenario-2a:
+  - total 7 nodes including admin node
+  - database: default, postgresql
+  - pacemaker: 3 clusters with 2 nodes (SBD)
+  - keystone UUID
+  - swift (allow public container, enable object versioning)
+  - glance (storage swift)
+  - nova: ssl, libvirt migration enabled, shared storage, kvm kernel samepage merging, 1 KVM
+  - cinder: Local file
+  - neutron: linuxbridge or OVS 
+  - manila: NetApp backend (we expect that a vserver 'cloud-manila-svm' is available on the 'netapp-n1-e0m.cloud.suse.de' server)
+
+Warning: It will wipe all machines!
 &lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+  <logRotator class="hudson.tasks.LogRotator">
+    <daysToKeep>-1</daysToKeep>
+    <numToKeep>15</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
   <keepDependencies>false</keepDependencies>
   <properties>
-    <jenkins.model.BuildDiscarderProperty>
-      <strategy class="hudson.tasks.LogRotator">
-        <daysToKeep>-1</daysToKeep>
-        <numToKeep>15</numToKeep>
-        <artifactDaysToKeep>-1</artifactDaysToKeep>
-        <artifactNumToKeep>-1</artifactNumToKeep>
-      </strategy>
-    </jenkins.model.BuildDiscarderProperty>
-    <com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty plugin="build-failure-analyzer@">
-      <doNotScan>false</doNotScan>
-    </com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty>
-    <com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty plugin="gitlab-plugin@">
-      <gitLabConnection>https://gitlab.suse.de</gitLabConnection>
-    </com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty>
-    <org.jenkinsci.plugins.gitlablogo.GitlabLogoProperty plugin="gitlab-logo@">
-      <repositoryName/>
-    </org.jenkinsci.plugins.gitlablogo.GitlabLogoProperty>
-    <com.sonyericsson.rebuild.RebuildSettings plugin="rebuild@">
-      <autoRebuild>false</autoRebuild>
-      <rebuildDisabled>false</rebuildDisabled>
-    </com.sonyericsson.rebuild.RebuildSettings>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <hudson.model.StringParameterDefinition>
@@ -58,6 +43,19 @@ Warning: It will wipe all machines!&#13;
           <name>shared_storage_ip</name>
           <description>Mandatory, shared storage server IP</description>
           <defaultValue>10.162.66.1</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>sbd_ip</name>
+          <description>Mandatory, IP of iscsi target for sbd</description>
+          <defaultValue>10.162.64.10</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>compute_nodes_number</name>
+          <description>Mandatory; after increasing the number of nodes don't forget to reference
+scenario file accordingly by changing the git repo below;
+by default only 1 compute node alias is added
+</description>
+          <defaultValue>1</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>repo_owner</name>
@@ -167,9 +165,9 @@ Warning: It will wipe all machines!&#13;
         </hudson.model.BooleanParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
-    <hudson.plugins.heavy__job.HeavyJobProperty plugin="heavy-job@1.1">
-      <weight>1</weight>
-    </hudson.plugins.heavy__job.HeavyJobProperty>
+    <com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty plugin="build-failure-analyzer@">
+      <doNotScan>false</doNotScan>
+    </com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty>
   </properties>
   <scm class="hudson.scm.NullSCM"/>
   <assignedNode>cloud-mkphyscloud-gate-qa</assignedNode>
@@ -195,7 +193,7 @@ export artifacts_dir=$WORKSPACE/.artifacts
 rm -rf $artifacts_dir
 mkdir -p $artifacts_dir
 touch $artifacts_dir/.ignore
-  
+
 # check that netapp backend server is available
 ping -c 3 $netapp_server || ret=$?
 
@@ -241,13 +239,13 @@ export nodenumber=$nodenumber ;
 export hacloud=$hacloud ;
 export clusterconfig=$clusterconfig ;
 export shared_storage_ip=$shared_storage_ip ;
-export want_node_aliases=controller=2,data=2,network=2,computekvm=1 ;
-export want_node_roles=controller=2,storage=2,network=2,compute=1 ;
+export want_node_aliases=controller=2,data=2,network=2,compute-kvm=$compute_nodes_number ;
+export want_node_roles=controller=2,storage=2,network=2,compute=$compute_nodes_number ;
 export scenario=\"/root/scenario.yml\" ;
 export netapp_password=$netapp_password ;
 export netapp_server=$netapp_server ;
 export netapp_vserver=$netapp_vserver ;
-export commands=\"$commands\" "' 
+export commands=\"$commands\" "'
 
 sed -i -e "s,##shared_nfs_for_database##,$shared_storage_ip:/var/$cloud/ha-database," scenario.yml
 sed -i -e "s,##shared_nfs_for_rabbitmq##,$shared_storage_ip:/var/$cloud/ha-rabbitmq," scenario.yml
@@ -277,51 +275,53 @@ if [ $ret == "0" ]; then
 
     chmod +x scripts/iscsictl.py
 
-    ./scripts/iscsictl.py --service target --host \$(hostname) --no-key
-    ./scripts/iscsictl.py --service initiator --target_host \$(hostname) --host controller1 --no-key
-    ./scripts/iscsictl.py --service initiator --target_host \$(hostname) --host controller2 --no-key
-    ./scripts/iscsictl.py --service initiator --target_host \$(hostname) --host data1 --no-key
-    ./scripts/iscsictl.py --service initiator --target_host \$(hostname) --host data2 --no-key
-    ./scripts/iscsictl.py --service initiator --target_host \$(hostname) --host network1 --no-key
-    ./scripts/iscsictl.py --service initiator --target_host \$(hostname) --host network2 --no-key
-    
+    ./scripts/iscsictl.py --service initiator --target_host $sbd_ip --host controller1 --no-key --id id-qa$hw_number
+    ./scripts/iscsictl.py --service initiator --target_host $sbd_ip --host controller2 --no-key --id id-qa$hw_number
+    ./scripts/iscsictl.py --service initiator --target_host $sbd_ip --host data1       --no-key --id id-qa$hw_number
+    ./scripts/iscsictl.py --service initiator --target_host $sbd_ip --host data2       --no-key --id id-qa$hw_number
+    ./scripts/iscsictl.py --service initiator --target_host $sbd_ip --host network1    --no-key --id id-qa$hw_number
+    ./scripts/iscsictl.py --service initiator --target_host $sbd_ip --host network2    --no-key --id id-qa$hw_number
+
     # preparation of SBD for services nodes
     SBD_DEV_SERVICES=\$(ssh controller1 echo '/dev/disk/by-id/scsi-\$(lsscsi -i | grep LIO | tr -s " " |cut -d " " -f7)')
-    ssh controller1 "zypper --non-interactive install sbd; sbd -d \$SBD_DEV_SERVICES create"
+    ssh controller1 "zypper --non-interactive install sbd; sbd -d \$SBD_DEV_SERVICES create -4 20 -1 10"
     ssh controller2 "zypper --non-interactive install sbd"
     # take scenario yaml file and replace placeholders
     sed -i "s|@@sbd_device_services@@|\${SBD_DEV_SERVICES}|g" scenario.yml
 
     # preparation of SBD for data nodes
     SBD_DEV_DATA=\$(ssh data1 echo '/dev/disk/by-id/scsi-\$(lsscsi -i | grep LIO | tr -s " " |cut -d " " -f7)')
-    ssh data1 "zypper --non-interactive install sbd; sbd -d \$SBD_DEV_DATA create"
+    ssh data1 "zypper --non-interactive install sbd; sbd -d \$SBD_DEV_DATA create -4 20 -1 10"
     ssh data2 "zypper --non-interactive install sbd"
     # take scenario yaml file and replace placeholders
     sed -i "s|@@sbd_device_data@@|\${SBD_DEV_DATA}|g" scenario.yml
 
     # preparation of SBD for network nodes
     SBD_DEV_NETWORK=\$(ssh network1 echo '/dev/disk/by-id/scsi-\$(lsscsi -i | grep LIO | tr -s " " |cut -d " " -f7)')
-    ssh network1 "zypper --non-interactive install sbd; sbd -d \$SBD_DEV_NETWORK create"
+    ssh network1 "zypper --non-interactive install sbd; sbd -d \$SBD_DEV_NETWORK create -4 20 -1 10"
     ssh network2 "zypper --non-interactive install sbd"
     # take scenario yaml file and replace placeholders
     sed -i "s|@@sbd_device_network@@|\${SBD_DEV_NETWORK}|g" scenario.yml
 
     # watchdog configuration
-    ssh controller1 modprobe softdog; echo softdog &gt; /etc/modules-load.d/watchdog.conf
-    ssh controller2 modprobe softdog; echo softdog &gt; /etc/modules-load.d/watchdog.conf
+    ssh controller1 "modprobe softdog; echo softdog &gt; /etc/modules-load.d/watchdog.conf"
+    ssh controller2 "modprobe softdog; echo softdog &gt; /etc/modules-load.d/watchdog.conf"
 
-    ssh data1 modprobe softdog; echo softdog &gt; /etc/modules-load.d/watchdog.conf
-    ssh data2 modprobe softdog; echo softdog &gt; /etc/modules-load.d/watchdog.conf
+    ssh data1 "modprobe softdog; echo softdog &gt; /etc/modules-load.d/watchdog.conf"
+    ssh data2 "modprobe softdog; echo softdog &gt; /etc/modules-load.d/watchdog.conf"
 
-    ssh network1 modprobe softdog; echo softdog &gt; /etc/modules-load.d/watchdog.conf
-    ssh network2 modprobe softdog; echo softdog &gt; /etc/modules-load.d/watchdog.conf
+    ssh network1 "modprobe softdog; echo softdog &gt; /etc/modules-load.d/watchdog.conf"
+    ssh network2 "modprobe softdog; echo softdog &gt; /etc/modules-load.d/watchdog.conf"
 
     # ----- End of SBD
 EOSCRIPT
 
-  #chmod +x /tmp/sbd_prepare_$admin
+  chmod +x /tmp/sbd_prepare_$admin
 
-  #scp /tmp/sbd_prepare_$admin root@$admin:sbd_prepare
+  scp /tmp/sbd_prepare_$admin root@$admin:sbd_prepare
+
+  # Rerun chef-client to avoid frequent failures here and update bind records, see bsc#1021900
+  ssh roott@$admin 'chef-client'
 
   # Check if zypper is used by other application
   ssh root@$admin '
@@ -414,6 +414,7 @@ scenario_build_number=$BUILD_NUMBER
   <publishers>
     <hudson.tasks.ArtifactArchiver>
       <artifacts>.artifacts/**</artifacts>
+      <latestOnly>false</latestOnly>
       <allowEmptyArchive>true</allowEmptyArchive>
       <onlyIfSuccessful>false</onlyIfSuccessful>
       <fingerprint>false</fingerprint>
