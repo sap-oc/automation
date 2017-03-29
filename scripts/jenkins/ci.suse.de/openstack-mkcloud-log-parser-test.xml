@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
   <actions/>
-  <description>&lt;!-- Managed by Jenkins Job Builder --&gt;
-This job runs https://github.com/SUSE-Cloud/automation/blob/master/scripts/mkcloud results are
-analyzed by https://github.com/SUSE-Cloud/automation/blob/master/scripts/jenkins/mkcloudresultcheck.pl
-on mkcloudresultcheck@mkcloudresultcheck.cloud.suse.de every 15 minutes
+  <description>This job runs https://github.com/SUSE-Cloud/automation/blob/master/scripts/mkcloud
+Results are analyzed by https://github.com/SUSE-Cloud/automation/blob/master/scripts/jenkins/mkcloudresultcheck.pl on mkcloudresultcheck@mkcloudresultcheck.cloud.suse.de every 15 minutes
 &lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <keepDependencies>false</keepDependencies>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
@@ -120,7 +118,7 @@ if [[ $github_pr ]] ; then
         echo "we merge to always test what will end up in master"
         git merge master -m temp-merge-commit
         # show latest commit in log to see what's really tested
-        #git --no-pager show
+        git --no-pager show
         popd
     elif [[ "$github_pr_repo" = "SUSE-Cloud/cct" ]]; then
         export want_cct_pr=$github_pr_id
@@ -142,7 +140,7 @@ cat ${automationrepo}/${sample_log_file}
   </builders>
   <publishers>
     <hudson.plugins.logparser.LogParserPublisher>
-      <unstableOnWarning>true</unstableOnWarning>
+      <unstableOnWarning>false</unstableOnWarning>
       <failBuildOnError>false</failBuildOnError>
       <showGraphs>true</showGraphs>
       <useProjectRule>true</useProjectRule>

@@ -2,7 +2,8 @@
 <project>
   <actions/>
   <description>This job runs https://github.com/SUSE-Cloud/automation/blob/master/scripts/mkcloud
-Results are analyzed by https://github.com/SUSE-Cloud/automation/blob/master/scripts/jenkins/mkcloudresultcheck.pl on mkcloudresultcheck@mkcloudresultcheck.cloud.suse.de every 15 minutes&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
+Results are analyzed by https://github.com/SUSE-Cloud/automation/blob/master/scripts/jenkins/mkcloudresultcheck.pl on mkcloudresultcheck@mkcloudresultcheck.cloud.suse.de every 15 minutes
+&lt;!-- Managed by Jenkins Job Builder --&gt;</description>
   <logRotator class="hudson.tasks.LogRotator">
     <daysToKeep>300</daysToKeep>
     <numToKeep>2000</numToKeep>
@@ -53,6 +54,18 @@ Note: SHA1 must be latest commit in PR, $context is optional (only use if multip
           <defaultValue>openstack-mkcloud</defaultValue>
           <allNodesMatchingLabel>false</allNodesMatchingLabel>
         </org.jvnet.jenkins.plugins.nodelabelparameter.LabelParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>debug_mkcloud</name>
+          <description>Use set -x and PS4 tracing for mkcloud
+</description>
+          <defaultValue>1</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>debug_qa_crowbarsetup</name>
+          <description>Use set -x and PS4 tracing for qa_crowbarsetup.sh
+</description>
+          <defaultValue>1</defaultValue>
+        </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>cloudsource</name>
           <description>Can be something like develcloud6 (uses Devel:Cloud:*, see TESTHEAD parameter for Staging), susecloud6 (uses SUSE:*), GM3 (uses the GM ISO)</description>
@@ -314,9 +327,7 @@ export log_dir=$artifacts_dir/mkcloud_log
 
 export automationrepo=~/github.com/SUSE-Cloud/automation
 jtsync=${automationrepo}/scripts/jtsync/jtsync.rb
-export debug_qa_crowbarsetup=1
 export cephvolumenumber=1 # one disk is either cinder raw, ceph-osd or swift storage
-export debug=0
 export want_neutronsles12=1
 export want_mtu_size=8900
 [[ $libvirt_type = hyperv ]] &amp;&amp; want_mtu_size=1500 # windows-PXE-bootloader seems to not like jumbo-packets
@@ -452,7 +463,7 @@ if [[ $github_pr ]] ; then
         ghremote=origin
         git config --get-all remote.${ghremote}.fetch | grep -q pull || \
             git config --add remote.${ghremote}.fetch "+refs/pull/*/head:refs/remotes/${ghremote}/pr/*"
-        git fetch $ghremote
+        git fetch $ghremote 2&gt;&amp;1 | grep -v '\[new ref\]'
         git checkout -t $ghremote/pr/$github_pr_id
         echo "we merge to always test what will end up in master"
         git merge master -m temp-merge-commit
@@ -513,7 +524,7 @@ export clouddescription="Jenkins Build: $BUILD_NUMBER / $JOB_NAME"
 
 $custom_settings
 
-perl -e "alarm 6*60*60 ; exec '${mkcloudwrapper} bash -x ${automationrepo}/scripts/mkcloud setuphost $(echo -n $MKCLOUDTARGET) ' ; print qq{$!\n} ; exit 127 " | tee $artifacts_dir/mkcloud_short_stdout.log
+perl -e "alarm 6*60*60 ; exec '${mkcloudwrapper} bash ${automationrepo}/scripts/mkcloud setuphost $(echo -n $MKCLOUDTARGET) ' ; print qq{$!\n} ; exit 127 " | tee $artifacts_dir/mkcloud_short_stdout.log
 ret=${PIPESTATUS[0]}
 if [[ $ret != 0 ]] ; then
     if [[ $github_pr_sha ]] ; then
