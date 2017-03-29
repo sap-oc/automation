@@ -442,7 +442,7 @@ if [[ $github_pr ]] ; then
 
     echo "testing PR: https://github.com/$github_pr_repo/pull/$github_pr_id"
     ghs=${automationrepo}/scripts/github-status/github-status.rb
-    zypper -n install "rubygem(netrc)" "rubygem(octokit)"
+    sudo zypper -n install "rubygem(netrc)" "rubygem(octokit)"
 
     if ! $ghs -r $github_pr_repo -a is-latest-sha -p $github_pr_id -c $github_pr_sha ; then
         $ghs -a set-status -s "error" -t $BUILD_URL -r $github_pr_repo -c $github_pr_sha -m "SHA1 mismatch, newer commit exists" --context $ghs_context
@@ -550,9 +550,9 @@ fi
     <hudson.plugins.logparser.LogParserPublisher plugin="log-parser@">
       <unstableOnWarning>false</unstableOnWarning>
       <failBuildOnError>false</failBuildOnError>
-      <showGraphs>true</showGraphs>
-      <useProjectRule>true</useProjectRule>
-      <projectRulePath>log-parser-plugin-rules.txt</projectRulePath>
+      <showGraphs>false</showGraphs>
+      <parsingRulesPath>log-parser-plugin-rules.txt</parsingRulesPath>
+      <useProjectRule>false</useProjectRule>
     </hudson.plugins.logparser.LogParserPublisher>
     <hudson.tasks.ArtifactArchiver>
       <artifacts>.artifacts/**</artifacts>
