@@ -263,11 +263,6 @@ want_node_aliases='data=1,services=2,storage=2' assigns the aliases to 5 nodes a
           <defaultValue/>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
-          <name>want_monasca</name>
-          <description>Deploy with Monasca</description>
-          <defaultValue/>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
           <name>want_barbican</name>
           <description>Deploy with Barbican</description>
           <defaultValue/>
@@ -555,9 +550,9 @@ fi
     <hudson.plugins.logparser.LogParserPublisher plugin="log-parser@">
       <unstableOnWarning>false</unstableOnWarning>
       <failBuildOnError>false</failBuildOnError>
-      <showGraphs>false</showGraphs>
-      <parsingRulesPath>log-parser-plugin-rules.txt</parsingRulesPath>
-      <useProjectRule>false</useProjectRule>
+      <showGraphs>true</showGraphs>
+      <useProjectRule>true</useProjectRule>
+      <projectRulePath>log-parser-plugin-rules.txt</projectRulePath>
     </hudson.plugins.logparser.LogParserPublisher>
     <hudson.tasks.ArtifactArchiver>
       <artifacts>.artifacts/**</artifacts>
