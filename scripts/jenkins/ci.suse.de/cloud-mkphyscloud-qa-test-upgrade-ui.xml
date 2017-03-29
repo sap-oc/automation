@@ -111,7 +111,8 @@ ssh root@$admin "
   onadmin_run_cct
 
   export cloudsource=$upgrade_cloudsource
-  onadmin_prepare_cloudupgrade_admin_repos_6_to_7
+  onadmin_prepare_cloudupgrade_repos_6_to_7
+  addcloud7maintupdates
 
   export cct_tests=feature:ui:upgrade:admin:repos
   onadmin_run_cct
@@ -163,7 +164,6 @@ wait_for 150 1 "nc -w 1 -z $admin 22" "admin node to start ssh daemon"
 ssh root@$admin "
   export cloud=$cloud;
   export cloudsource=$upgrade_cloudsource
-  export upgrade_cloudsource=$upgrade_cloudsource
   export cct_checkout_branch=$cct_checkout_branch
   export cct_ui_tests=true
 " '
@@ -171,14 +171,13 @@ ssh root@$admin "
   hostname -f;
   source mkcloud.config;
   source scripts/qa_crowbarsetup.sh;
+  export cloudsource=$upgrade_cloudsource
 
   onadmin_check_admin_server_upgraded
 
   export cct_tests=feature:ui:upgrade:pgsql:create
   onadmin_run_cct
 
-  export cloudsource=$upgrade_cloudsource
-  onadmin_prepare_cloudupgrade_nodes_repos_6_to_7
   export cct_tests=feature:ui:upgrade:nodes:repos
   onadmin_run_cct
 
