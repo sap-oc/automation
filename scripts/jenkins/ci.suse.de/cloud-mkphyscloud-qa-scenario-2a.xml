@@ -274,13 +274,8 @@ if [ $ret == "0" ]; then
 
     chmod +x scripts/iscsictl.py
 
-    echo "Verify vmoravec"
-    echo $sbd_ip
-    echo qa$hw_number
-
     for node in {controller1,controller2,data1,data2,network1,network2} ; do
-      echo $node
-      ./scripts/iscsictl.py --service initiator --target_host $sbd_ip --host $node --no-key --id id-qa$hw_number
+      ./scripts/iscsictl.py --service initiator --target_host $sbd_ip --host \$node --no-key --id id-qa$hw_number
     done
 
     # preparation of SBD for services nodes
