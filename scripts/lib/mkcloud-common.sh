@@ -13,6 +13,7 @@
 distsuseip=$(dig -t A +short $distsuse)
 : ${susedownload:=download.nue.suse.com}
 : ${smturl:="http://$susedownload/update/build.suse.de"}
+
 if [[ $UID != 0 ]] ; then
     : ${sudo:=sudo}
     PATH=/sbin:/usr/sbin:/usr/local/sbin:$PATH

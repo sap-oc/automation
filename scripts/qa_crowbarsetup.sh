@@ -37,6 +37,10 @@ fi
 : ${want_tempest:=1}
 : ${want_s390:=''}
 : ${want_horizon_integration_test:=''}
+: ${want_cloud6_iso_path:='/ibs/Devel:/Cloud:/6/images/iso'}
+: ${want_cloud6_iso:="SUSE-OPENSTACK-CLOUD-6-$arch*Media1.iso"}
+: ${want_cloud7_iso_path:='/ibs/Devel:/Cloud:/7/images/iso'}
+: ${want_cloud7_iso:="SUSE-OPENSTACK-CLOUD-7-$arch*Media1.iso"}
 
 if [[ $arch = "s390x" ]] ; then
     want_s390=1
@@ -1229,16 +1233,16 @@ function onadmin_set_source_variables
             CLOUDLOCALREPOS="SUSE-Cloud-5-devel"
         ;;
         develcloud6)
-            CLOUDSLE12DISTPATH=${want_cloud6_iso_path:='/ibs/Devel:/Cloud:/6/images/iso'}
+            CLOUDSLE12DISTPATH=$want_cloud6_iso_path
             [ -n "$TESTHEAD" ] && CLOUDSLE12DISTPATH=/ibs/Devel:/Cloud:/6:/Staging/images/iso
-            CLOUDSLE12DISTISO=${want_cloud6_iso:="SUSE-OPENSTACK-CLOUD-6-$arch*Media1.iso"}
+            CLOUDSLE12DISTISO=$want_cloud6_iso
             CLOUDSLE12TESTISO="CLOUD-6-TESTING-$arch*Media1.iso"
             CLOUDLOCALREPOS="SUSE-OpenStack-Cloud-6-devel"
         ;;
         develcloud7)
-            CLOUDSLE12DISTPATH=${want_cloud7_iso_path:='/ibs/Devel:/Cloud:/7/images/iso'}
+            CLOUDSLE12DISTPATH=$want_cloud7_iso_path
             [ -n "$TESTHEAD" ] && CLOUDSLE12DISTPATH=/ibs/Devel:/Cloud:/7:/Staging/images/iso
-            CLOUDSLE12DISTISO=${want_cloud7_iso:="SUSE-OPENSTACK-CLOUD-7-$arch*Media1.iso"}
+            CLOUDSLE12DISTISO=$want_cloud7_iso
             CLOUDSLE12TESTISO="CLOUD-7-TESTING-${arch}-Media1.iso"
             CLOUDLOCALREPOS="SUSE-OpenStack-Cloud-7-devel"
         ;;
