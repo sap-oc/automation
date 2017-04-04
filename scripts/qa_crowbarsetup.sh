@@ -49,6 +49,10 @@ else
     : ${want_cinder_rbd_flatten_snaps:=0}
     : ${want_clustered_rabbitmq:=0}
 fi
+: ${want_cloud6_iso_path:='/ibs/Devel:/Cloud:/6/images/iso'}
+: ${want_cloud6_iso:="SUSE-OPENSTACK-CLOUD-6-$arch*Media1.iso"}
+: ${want_cloud7_iso_path:='/ibs/Devel:/Cloud:/7/images/iso'}
+: ${want_cloud7_iso:="SUSE-OPENSTACK-CLOUD-7-$arch*Media1.iso"}
 
 if [[ $arch = "s390x" ]] ; then
     want_s390=1
