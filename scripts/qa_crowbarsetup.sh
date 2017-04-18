@@ -5212,6 +5212,9 @@ function onadmin_run_cct
             bundle install --without ui_tests
         fi
 
+	[[ $http_proxy ]] && http_proxy_backup=$http_proxy && unset http_proxy
+	[[ $https_proxy ]] && https_proxy_backup=$https_proxy && unset https_proxy
+
         local IFS
         IFS='+'
         for test in $cct_tests; do
@@ -5220,6 +5223,10 @@ function onadmin_run_cct
             [[ $ret != 0 ]] && break
         done
         popd
+
+	[[ $http_proxy_backup ]] && export http_proxy=$http_proxy_backup
+	[[ $https_proxy_backup ]] && export https_proxy=$https_proxy_backup
+
     fi
 
     return $ret
