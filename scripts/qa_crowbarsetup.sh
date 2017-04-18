@@ -392,7 +392,7 @@ function addcloud5pool
 
 function addcloud6maintupdates
 {
-    add_mount "SUSE-OpenStack-Cloud-6-Updates" "$clouddata:/srv/nfs/repos/$arch/SUSE-OpenStack-Cloud-6-Updates/" "$tftpboot_repos12sp1_dir/SUSE-OpenStack-Cloud-6-Updates/" "cloudmaintup"
+    add_mount "SUSE-OpenStack-Cloud-6-Updates" "$clouddata_nfs:/$clouddata_nfs_dir/repos/$arch/SUSE-OpenStack-Cloud-6-Updates/" "$tftpboot_repos12sp1_dir/SUSE-OpenStack-Cloud-6-Updates/" "cloudmaintup"
 }
 
 function addcloud6testupdates
@@ -404,17 +404,17 @@ function addcloud6testupdates
 
 function addcloud6pool
 {
-    add_mount "SUSE-OpenStack-Cloud-6-Pool" "$clouddata:/srv/nfs/repos/$arch/SUSE-OpenStack-Cloud-6-Pool/" "$tftpboot_repos12sp1_dir/SUSE-OpenStack-Cloud-6-Pool/" "cloudpool"
+    add_mount "SUSE-OpenStack-Cloud-6-Pool" "$clouddata_nfs:/$clouddata_nfs_dir/repos/$arch/SUSE-OpenStack-Cloud-6-Pool/" "$tftpboot_repos12sp1_dir/SUSE-OpenStack-Cloud-6-Pool/" "cloudpool"
 }
 
 function addcloud7pool
 {
-    add_mount "SUSE-OpenStack-Cloud-7-Pool" "$clouddata:/srv/nfs/repos/$arch/SUSE-OpenStack-Cloud-7-Pool/" "$tftpboot_repos12sp2_dir/SUSE-OpenStack-Cloud-7-Pool/" "cloudpool"
+    add_mount "SUSE-OpenStack-Cloud-7-Pool" "$clouddata_nfs:/$clouddata_nfs_dir/repos/$arch/SUSE-OpenStack-Cloud-7-Pool/" "$tftpboot_repos12sp2_dir/SUSE-OpenStack-Cloud-7-Pool/" "cloudpool"
 }
 
 function addcloud7maintupdates
 {
-    add_mount "SUSE-OpenStack-Cloud-7-Updates" "$clouddata:/srv/nfs/repos/$arch/SUSE-OpenStack-Cloud-7-Updates/" "$tftpboot_repos12sp2_dir/SUSE-OpenStack-Cloud-7-Updates/" "cloudmaintup"
+    add_mount "SUSE-OpenStack-Cloud-7-Updates" "$clouddata_nfs:/$clouddata_nfs_dir/repos/$arch/SUSE-OpenStack-Cloud-7-Updates/" "$tftpboot_repos12sp2_dir/SUSE-OpenStack-Cloud-7-Updates/" "cloudmaintup"
 }
 
 function addcloud7testupdates
@@ -510,7 +510,7 @@ function add_ha12sp2_repo
     for repo in SLE12-SP2-HA-{Pool,Updates}; do
         # Note no zypper alias parameter here since we don't want to
         # zypper addrepo on the admin node.
-        add_mount "$repo" "$clouddata:/srv/nfs/repos/$arch/$repo" \
+        add_mount "$repo" "$clouddata_nfs:/$clouddata_nfs_dir/repos/$repo" \
             "$tftpboot_repos12sp2_dir/$repo"
     done
 }
@@ -877,7 +877,7 @@ function onadmin_prepare_sles12sp2_installmedia
     for a in $architectures; do
         local sles12sp2_mount="$tftpboot_suse12sp2_dir/$a/install"
         add_mount "SLE-12-SP2-Server-TEST/sle-12-$a" \
-            "$clouddata:/srv/nfs/suse-12.2/$a/install" \
+            "$clouddata_nfs:/$clouddata_nfs_dir/suse-12.2/$a/install" \
             "$sles12sp2_mount"
 
         if [ ! -d "$sles12sp2_mount/media.1" ] ; then
@@ -909,7 +909,7 @@ function onadmin_prepare_sles12sp1_other_repos
 function onadmin_prepare_sles12sp2_other_repos
 {
     for repo in SLES12-SP2-{Pool,Updates}; do
-        add_mount "$repo/sle-12-$arch" "$clouddata:/srv/nfs/repos/$arch/$repo" \
+        add_mount "$repo/sle-12-$arch" "$clouddata_nfs:/$clouddata_nfs_dir/repos/$arch/$repo" \
             "$tftpboot_repos12sp2_dir/$repo"
         if [[ $want_s390 ]] ; then
             add_mount "$repo/sle-12-s390x" "$clouddata:/srv/nfs/repos/s390x/$repo" \
