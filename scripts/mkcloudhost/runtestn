@@ -27,5 +27,9 @@ export adminnetmask=255.255.254.0
 export virtualcloud=$vcloudname$n
 export cloud=$virtualcloud
 export NOSETUPPORTFORWARDING=1
+# If no central NFS server is in place, for exporting the various repos to the admin server,
+# the default is to have NFS server running and shares exported on the
+# mkcloud hypervisor, which is then always reachable on the .1 in the cloudadminnet.
+export nfsserver=${nfsserver:="$(cloudadminnet $n).1"}
 #exec bash -x ./mkcloud "$@"
 
