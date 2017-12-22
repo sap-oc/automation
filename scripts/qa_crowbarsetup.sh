@@ -953,13 +953,14 @@ function onadmin_prepareinstallcrowbar
     # when switching from DHCP to static.
     # This dropping is avoided by stripping comments.
     sed -i -e 's/#.*//' /etc/resolv.conf
+    : ${net_admin_mask:-255.255.255.0}
     cat > /etc/sysconfig/network/ifcfg-eth0 <<EOF
 NAME='eth0'
 STARTMODE='auto'
 BOOTPROTO='static'
 IPADDR='$adminip'
-NETMASK='255.255.255.0'
-BROADCAST='$net.255'
+NETMASK='$net_admin_mask'
+# BROADCAST='$net.255'
 EOF
     ifdown br0
     rm -f /etc/sysconfig/network/ifcfg-br0
