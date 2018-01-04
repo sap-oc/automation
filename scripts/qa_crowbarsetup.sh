@@ -2249,6 +2249,8 @@ function custom_configuration
                 proposal_set_value ipmi default "['attributes']['ipmi']['debug']" true
                 proposal_set_value ipmi default "['attributes']['ipmi']['bmc_user']" "'$bmc_user'"
                 proposal_set_value ipmi default "['attributes']['ipmi']['bmc_password']" "'$bmc_password'"
+                proposal_set_value ipmi default "['attributes']['ipmi']['bmc_reconfigure']" false
+                proposal_set_value ipmi default "['attributes']['ipmi']['bmc_nat_enable']" false
             fi
         ;;
         keystone)
