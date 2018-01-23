@@ -1677,6 +1677,16 @@ function onadmin_post_allocate
 {
     pre_hook $FUNCNAME
 
+    if [[ $want_nodes_with_storage_net = 1 ]] ; then
+        crowbar_node=`get_crowbar_node`
+        for node in `get_all_nodes` ; do
+            if [[ $node == $crowbar_node ]]; then
+                continue
+            fi
+            retry add_node_to_network $node storage
+        done
+    fi
+
     if [[ $hacloud = 1 ]] ; then
         onadmin_set_source_variables
         cluster_node_assignment
