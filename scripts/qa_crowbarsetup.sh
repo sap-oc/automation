@@ -792,7 +792,7 @@ function create_repos_yml
 {
     local repos_yml="/etc/crowbar/repos.yml"
     local tmp_yml=$(mktemp).yml
-    local additional_repos=
+    local additional_repos="$want_custom_repos"
 
     echo --- > $tmp_yml
 
