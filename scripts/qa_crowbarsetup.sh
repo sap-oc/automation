@@ -1683,6 +1683,9 @@ function onadmin_post_allocate
             if [[ $node == $crowbar_node ]]; then
                 continue
             fi
+            if crowbarctl node show $node --filter crowbar.network.storage.address --format=plain 2>/dev/null; then
+                continue
+            fi
             retry add_node_to_network $node storage
         done
     fi
