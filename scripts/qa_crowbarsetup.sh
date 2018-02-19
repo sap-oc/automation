@@ -1192,6 +1192,12 @@ EOPYTHON
         wget -O$netfile "$want_network_json_url"
     fi
 
+    local netfileoverride=`basename $netfile`.override
+    if [ -e ~/$netfileoverride ]; then
+        echo "Overriding $netfile from ~/$netfileoverride"
+        cp -p ~/$netfileoverride $netfile
+    fi
+
     # to allow integration into external DNS:
     local f=/opt/dell/chef/cookbooks/bind9/templates/default/named.conf.erb
     grep -q allow-transfer $f || sed -i -e "s#options {#&\n\tallow-transfer { 10.0.0.0/8; };#" $f
