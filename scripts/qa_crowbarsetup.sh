@@ -2668,6 +2668,22 @@ function custom_configuration
             if [[ $keep_existing_hostname = 1 ]] ; then
                 proposal_set_value provisioner default "['attributes']['provisioner']['keep_existing_hostname']" "true"
             fi
+
+            # pre-populate attributes.provisioner.packages.$version if wanted
+            if [[ $want_extra_packages ]]; then
+                # this could be factored out in a function...
+                local target="suse-12.0"
+                if iscloudver 6; then
+                    target="suse-12.1"
+                elif iscloudver 7; then
+                    target="suse-12.2"
+                elif iscloudver 8plus;then
+                    target="suse-12.3"
+                fi
+                # example:
+                # export want_extra_packages="['sysstat','salt-minion','mlnx-en-kmp-default']"
+                proposal_set_value provisioner default "['attributes']['provisioner']['packages']['$target']" "$want_extra_packages"
+            fi
         ;;
         ironic)
             proposal_set_value ironic default "['attributes']['ironic']['enabled_drivers']" "['pxe_ipmitool', 'pxe_ssh']"
