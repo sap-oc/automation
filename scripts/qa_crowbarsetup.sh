@@ -1508,7 +1508,7 @@ function onadmin_allocate
     fi
 
     [[ $nodenumber -gt 0 ]] && wait_for 50 10 'test $(get_all_discovered_nodes | wc -l) -ge 1' "first node to be discovered"
-    wait_for 100 10 '[[ $(get_all_discovered_nodes | wc -l) -ge $nodenumber ]]' "all nodes to be discovered"
+    wait_for 100 15 '[[ $(get_all_discovered_nodes | wc -l) -ge $nodenumber ]]' "all nodes to be discovered"
     local n
     for n in `get_all_discovered_nodes` ; do
         wait_for 100 2 "knife node show -a state $n | grep -q 'discovered\|ready'" \
@@ -1664,6 +1664,19 @@ function onadmin_waitcloud
     local node
     for node in `get_all_discovered_nodes` ; do
         wait_node_ready $node
+    done
+}
+
+function onadmin_restart_chef_on_nodes
+{
+    pre_hook $FUNCNAME
+
+    crowbar_node=`get_crowbar_node`
+    for node in `get_all_nodes` ; do
+        if [[ $node == $crowbar_node ]]; then
+            continue
+        fi
+        ssh $node chef-client
     done
 }
 
@@ -2667,6 +2680,11 @@ function custom_configuration
                 # example:
                 # export want_extra_packages="['sysstat','salt-minion','mlnx-en-kmp-default']"
                 proposal_set_value provisioner default "['attributes']['provisioner']['packages']['$target']" "$want_extra_packages"
+            fi
+
+            if [[ $want_serial_console ]]; then
+                proposal_set_value provisioner default "['attributes']['provisioner']['use_serial_console']" "true"
+                proposal_set_value provisioner default "['attributes']['provisioner']['serial_tty']" "\"$want_serial_console\""
             fi
         ;;
         ironic)
@@ -5389,7 +5407,13 @@ function onadmin_batch
 {
     pre_hook $FUNCNAME
 
+    local adminfqdn=`get_crowbar_node`
+    local domain="${adminfqdn#*.}"
+    local jc="${domain%%.*}"
+
     sed -i "s/##hypervisor_ip##/$admingw/g" ${scenario}
+    sed -i "s/##domain##/$domain/g" ${scenario}
+    sed -i "s/##jc##/$jc/g" ${scenario}
 
     sed -i "s/##ironic_net_prefix##/$net_ironic/g" ${scenario}
     sed -i "s/##ironic_netmask##/$ironicnetmask/g" ${scenario}
