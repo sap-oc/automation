@@ -365,8 +365,23 @@ function onhost
     safely onhost_$cmd "$@"
 }
 
+# run hook code before the actual script does its function
+# example usage: export pre_do_installcrowbar=$(base64 -w 0 <<EOF
+# echo foo
+# EOF
+# )
+
+function pre_hook
+{
+    func=$1
+    pre=$(eval echo \$pre_$func | base64 -d)
+    setcloudnetvars $cloud
+    test -n "$pre" && eval "$pre"
+}
+
 function cleanup
 {
+    pre_hook $FUNCNAME
     ipmi_cleanup
     ${mkclouddriver}_do_cleanup
 }
