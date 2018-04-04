@@ -261,7 +261,7 @@ function mac_to_nodename
 function setcloudnetvars
 {
     local cloud=$1
-    export cloudfqdn=${cloudfqdn:-$cloud.cloud.suse.de}
+    export cloudfqdn=${cloudfqdn:-$cloud.mkcloud.sap.corp}
     if [ -z "$cloud" ] ; then
         complain 101 "Parameter missing that defines the cloud name" \
             "Possible values: [p1, d2, p, virtual]" \
