@@ -274,6 +274,7 @@ function sshrun
         export nfsserver_ip=$nfsserver_ip ;
         export nfsserver_fqdn=$nfsserver_fqdn ;
         export nfsserver_base_path=$nfsserver_base_path ;
+        export ntpserver=$ntpserver ;
         export rsyncserver=$rsyncserver ;
         export rsyncserver_ip=$rsyncserver_ip ;
         export rsyncserver_fqdn=$rsyncserver_fqdn ;
