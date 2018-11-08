@@ -8,4 +8,83 @@ else
 fi
 echo env=$testdir n=$n admin=$net_admin cloudpv=$cloudpv cloudvg=$cloudvg params="$@"
 echo access from outside via http://crowbar.$cloud.cloud.suse.de/ and http://dashboard.$cloud.cloud.suse.de/
+rm -f $testdir/run-mkcloud.sh
+cat > $testdir/run-mkcloud.sh << EOF
+#!/bin/bash
+export https_proxy=$https_proxy
+export http_proxy=$http_proxy
+export no_proxy="$no_proxy"
+
+export automationrepo="$automationrepo"
+export cloudsource="$cloudsource"
+export reposerver="$reposerver"
+export reposerver_httpport="$reposerver_httpport"
+export reposerver_base_path="$reposerver_base_path"
+
+export SKIPSUPPORTCONFIG="$SKIPSUPPORTCONFIG"
+export UPDATEREPOS="$UPDATEREPOS"
+export ZYPP_LOCK_TIMEOUT="$ZYPP_LOCK_TIMEOUT"
+export adminnode_hdd_size="$adminnode_hdd_size"
+export architectures="$architectures"
+export artifacts_dir="$artifacts_dir"
+export automationrepo="$automationrepo"
+export cache_dir="$cache_dir"
+export cct_tests="$cct_tests"
+export cephvolumenumber="$cephvolumenumber"
+export clouddescription="$clouddescription"
+export compute_node_memory="$compute_node_memory"
+export computenode_hdd_size="$computenode_hdd_size"
+export controller_hdd_size="$controller_hdd_size"
+export debug="$debug"
+export debug_qa_crowbarsetup="$debug_qa_crowbarsetup"
+export images_dir="$images_dir"
+export imageserver_url="$imageserver_url"
+export log_dir="$log_dir"
+export nfsserver_base_path="$nfsserver_base_path"
+export nodenumber="$nodenumber"
+export nodenumberlonelynode="$nodenumberlonelynode"
+export ntpserver="$ntpserver"
+export pre_cleanup="$pre_cleanup"
+export pre_do_installcrowbar="$pre_do_installcrowbar"
+export pre_onadmin_batch="$pre_onadmin_batch"
+export resize_admin_node_partition="$resize_admin_node_partition"
+export scenario="$scenario"
+export scenario_dir="$scenario_dir"
+export smturl="$smturl"
+export susedownload="$susedownload"
+export test_internet_url="$test_internet_url"
+export vcpus="$vcpus"
+export want_aodh_proposal="$want_aodh_proposal"
+export want_barbican_proposal="$want_barbican_proposal"
+export want_cached_images="$want_cached_images"
+export want_ceilometer_proposal="$want_ceilometer_proposal"
+export want_ceph="$want_ceph"
+export want_cloud6_iso="$want_cloud6_iso"
+export want_cloud6_iso_path="$want_cloud6_iso_path"
+export want_cloud7_iso="$want_cloud7_iso"
+export want_cloud7_iso_path="$want_cloud7_iso_path"
+export want_cloud8_iso="$want_cloud8_iso"
+export want_cloud8_iso_path="$want_cloud8_iso_path"
+export want_clustered_rabbitmq="$want_clustered_rabbitmq"
+export want_crm_failcount_skip="$want_crm_failcount_skip"
+export want_custom_repos="$want_custom_repos"
+export want_extra_packages="$want_extra_packages"
+export want_ironic="$want_ironic"
+export want_magnum_proposal="$want_magnum_proposal"
+export want_manila_proposal="$want_manila_proposal"
+export want_monasca_proposal="$want_monasca_proposal"
+export want_mtu_size="$want_mtu_size"
+export want_murano_proposal="$want_murano_proposal"
+export want_neutronsles12="$want_neutronsles12"
+export want_sahara_proposal="$want_sahara_proposal"
+export want_swift="$want_swift"
+export want_trove_proposal="$want_trove_proposal"
+
+. $ar/scripts/mkcloudhost/runtestn $n
+
+# original mkcloude params "$@"
+
+exec /srv/mkcloud/automation/scripts/mkcloud \$@
+EOF
+
 exec "$@"
